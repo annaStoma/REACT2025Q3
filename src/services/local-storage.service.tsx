@@ -1,17 +1,17 @@
 export const STORAGE_KEYS = {
-    searchTerm: 'searchTerm',
+  searchTerm: 'searchTerm',
 };
 
 export const LocalStorageService = {
-    getSearchTerm(key: string): string {
-        return localStorage.getItem(key) || '';
-    },
+  getSearchTerm(key: string): string {
+    return localStorage.getItem(key) || '';
+  },
 
-    setSearchTerm(key: string, term: string): void {
-        localStorage.setItem(key, term);
-    },
+  setSearchTerm(key: string, term: string): void {
+    localStorage.setItem(key, term);
+  },
 
-    clearSearchTerm(key: string): void {
-        localStorage.removeItem(key);
-    },
+  clearSearchTerm(key: string): void {
+    localStorage.removeItem(key);
+  },
 };

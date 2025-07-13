@@ -1,61 +1,51 @@
-import React, {Component, type ReactNode} from 'react';
+import { Component, type ReactNode } from 'react';
 import '../styles/ErrorBoundary.scss';
 
-interface ErrorBoundaryProps {
-    children: ReactNode;
+interface Props {
+  children: ReactNode;
 }
 
-interface ErrorBoundaryState {
-    hasError: boolean;
-    errorMessage: string;
+interface State {
+  message: string | null;
 }
 
-class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-    timeoutId: any = null;
+class ErrorBoundary extends Component<Props, State> {
+  timeoutId: number | null = null;
 
-    constructor(props: ErrorBoundaryProps) {
-        super(props);
-        this.state = {hasError: false, errorMessage: ''};
-    }
+  constructor(props: Props) {
+    super(props);
+    this.state = { message: null };
+  }
 
-    static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-        return {hasError: true, errorMessage: error.message};
-    }
+  componentDidMount() {
+    window.addEventListener('GlobalError', this.handleGlobalError);
+  }
 
-    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-        console.error('Uncaught error:', error, errorInfo);
-        this.showToast();
-    }
+  componentWillUnmount() {
+    window.removeEventListener('GlobalError', this.handleGlobalError);
+    if (this.timeoutId) clearTimeout(this.timeoutId);
+  }
 
-    showToast = () => {
-        if (this.timeoutId) clearTimeout(this.timeoutId);
+  handleGlobalError = (e: Event) => {
+    const customEvent = e as CustomEvent;
+    const message = customEvent.detail?.message || 'Unknown error occurred';
+    this.setState({ message });
 
-        this.timeoutId = setTimeout(() => {
-            this.setState({hasError: false, errorMessage: ''});
-        }, 2000);
-    };
+    this.timeoutId = window.setTimeout(() => {
+      this.setState({ message: null });
+    }, 5000);
+  };
 
-    renderToast() {
-        console.log('renderToast', this.state)
-        const {hasError, errorMessage} = this.state;
+  render() {
+    const { message } = this.state;
 
-        if (!hasError) return null;
-
-        return (
-            <div className="toast">
-                {errorMessage || 'Something went wrong.'}
-            </div>
-        );
-    }
-
-    render() {
-        return (
-            <>
-                {this.renderToast()}
-                {this.props.children}
-            </>
-        );
-    }
+    return (
+      <>
+        {message && <div className="toast">{message}</div>}
+        {this.props.children}
+      </>
+    );
+  }
 }
 
 export default ErrorBoundary;
