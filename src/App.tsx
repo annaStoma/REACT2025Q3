@@ -11,7 +11,7 @@ interface AppState {
 }
 
 class App extends Component<{}, AppState> {
-  constructor(props: {}) {
+  constructor(props: AppState) {
     super(props);
     this.state = {
       pokemons: [],
