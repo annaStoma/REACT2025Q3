@@ -1,6 +1,7 @@
 {
   "name": "rs-react-app",
   "private": true,
+  "homepage": "https://annaStoma.github.io/REACT2025Q3/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
