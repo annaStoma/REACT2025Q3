@@ -22,16 +22,12 @@ class SearchBar extends Component<SearchBarProps, SearchBarState> {
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
-    if (/^[a-zA-Z]*$/.test(value)) {
-      this.setState({ inputValue: value });
-    }
+    this.setState({ inputValue: value });
   };
 
   handleClick = (): void => {
     const trimmed = this.state.inputValue.trim();
-    if (/^[a-zA-Z]*$/.test(trimmed)) {
-      this.props.onSearchClick(trimmed);
-    }
+    this.props.onSearchClick(trimmed);
   };
 
   clear = (): void => {
