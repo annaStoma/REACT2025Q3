@@ -18,25 +18,27 @@ interface HeaderState {
 }
 
 class Header extends Component<HeaderProps, HeaderState> {
-  constructor(props: HeaderProps) {
-    super(props);
-    const savedSearch =
-      LocalStorageService.getSearchTerm(STORAGE_KEYS.searchTerm) || '';
-    this.state = {
-      searchValue: savedSearch,
-    };
-    if (savedSearch) {
-      this.handleSearch(savedSearch);
-    }
+  public state = {
+    searchValue:
+      LocalStorageService.getSearchTerm(STORAGE_KEYS.searchTerm) || '',
+  };
+
+  componentDidMount() {
+    this.handleSearch(this.state.searchValue);
   }
 
   handleSearch = (value: string): void => {
-    const { setPokemons, setIsLoading } = this.props;
+    value = value.trim();
 
-    this.setState({ searchValue: value });
     if (value) {
+      this.setState({ searchValue: value });
       LocalStorageService.setSearchTerm(STORAGE_KEYS.searchTerm, value);
+    } else {
+      LocalStorageService.clearSearchTerm(STORAGE_KEYS.searchTerm);
+      return;
     }
+
+    const { setPokemons, setIsLoading } = this.props;
 
     setIsLoading(true);
     getPokemonList(value)

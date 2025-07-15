@@ -7,6 +7,7 @@ interface Props {
 
 interface State {
   message: string | null;
+  error?: unknown;
 }
 
 class ErrorBoundary extends Component<Props, State> {
@@ -14,7 +15,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = { message: null };
+    this.state = { message: null, error: null };
   }
 
   componentDidMount() {
@@ -36,15 +37,25 @@ class ErrorBoundary extends Component<Props, State> {
     }, 5000);
   };
 
-  render() {
-    const { message } = this.state;
+  componentDidCatch(error: unknown, info: React.ErrorInfo) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    this.setState({ error, message });
+    console.log(error, info);
+  }
 
-    return (
-      <>
-        {message && <div className="toast">{message}</div>}
-        {this.props.children}
-      </>
-    );
+  render() {
+    if (this.state.error) {
+      return (
+        <div>
+          <h2>Something went wrong</h2>
+          <p>{this.state.message}</p>
+          <button onClick={() => this.setState({ message: null, error: null })}>
+            Reset
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
   }
 }
 

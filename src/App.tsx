@@ -8,9 +8,10 @@ import { BounceLoader } from 'react-spinners';
 interface AppState {
   pokemons: Pokemon[];
   isLoading: boolean;
+  fakeError?: boolean;
 }
 
-class App extends Component<{}, AppState> {
+class App extends Component<unknown, AppState> {
   constructor(props: AppState) {
     super(props);
     this.state = {
@@ -28,16 +29,14 @@ class App extends Component<{}, AppState> {
   };
 
   triggerFakeError = () => {
-    window.dispatchEvent(
-      new CustomEvent('GlobalError', {
-        detail: { message: 'This is a test error triggered manually.' },
-      })
-    );
+    this.setState({ fakeError: true });
   };
 
   render() {
     const { pokemons, isLoading } = this.state;
-
+    if (this.state.fakeError) {
+      throw new Error(`This is a test error triggered manually.`);
+    }
     return (
       <>
         <Header
