@@ -51,7 +51,7 @@ class App extends Component<unknown, AppState> {
         <ResultsTable pokemons={pokemons} />
 
         <div className="fake-arror-button">
-          <button onClick={this.triggerFakeError}>Throw Test API Error</button>
+          <button onClick={this.triggerFakeError}>Call an error</button>
         </div>
       </>
     );
