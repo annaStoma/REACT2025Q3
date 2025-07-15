@@ -35,7 +35,6 @@ class Header extends Component<HeaderProps, HeaderState> {
       LocalStorageService.setSearchTerm(STORAGE_KEYS.searchTerm, value);
     } else {
       LocalStorageService.clearSearchTerm(STORAGE_KEYS.searchTerm);
-      return;
     }
 
     const { setPokemons, setIsLoading } = this.props;
