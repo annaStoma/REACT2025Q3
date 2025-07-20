@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import './App.scss';
-import Header from './components/Header.tsx';
-import ResultsTable from './components/ResultsTable.tsx';
-import type { Pokemon } from './services/api.service.tsx';
+import Header from './components/Header';
+import ResultsTable from './components/ResultsTable';
+import type { Pokemon } from './services/api.service';
 import { BounceLoader } from 'react-spinners';
 
 interface AppState {

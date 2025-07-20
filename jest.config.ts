@@ -2,12 +2,12 @@ import type { Config } from 'jest';
 
 const config: Config = {
   preset: 'ts-jest',
-  testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
+  testEnvironment: 'jest-fixed-jsdom',
+  setupFilesAfterEnv: ['<rootDir>/setupTests.tsx'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
     '\\.(css|scss|sass)$': 'identity-obj-proxy',
+    '\\.(png|jpg|jpeg|gif|svg)$': '<rootDir>/src/test-utils/file-mock.tsx',
   },
   collectCoverage: true,
   collectCoverageFrom: [
