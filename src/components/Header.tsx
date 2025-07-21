@@ -1,12 +1,12 @@
 import { Component } from 'react';
-import SearchBar from './SearchBar.tsx';
-import { getPokemonList, type Pokemon } from '../services/api.service.tsx';
+import SearchBar from './SearchBar';
+import { getPokemonList, type Pokemon } from '../services/api.service';
 import '../styles/Header.scss';
 import LogoImage from '../assets/logo.png';
 import {
   LocalStorageService,
   STORAGE_KEYS,
-} from '../services/local-storage.service.tsx';
+} from '../services/local-storage.service';
 
 interface HeaderProps {
   setPokemons: (data: Pokemon[]) => void;
