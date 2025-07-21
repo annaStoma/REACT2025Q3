@@ -73,20 +73,4 @@ describe('App component', () => {
       expect(table).toBeInTheDocument();
     }
   });
-
-  // it('shows empty state in ResultsTable if no pokemons', () => {
-  //   render(<App />);
-  //   expect(screen.getByTestId('results-table')).toHaveTextContent(
-  //     'No pokemons'
-  //   );
-  // });
-  //
-  // it('throws an error when "Call an error" is clicked', () => {
-  //   jest.spyOn(console, 'error').mockImplementation(() => {});
-  //   render(<App />);
-  //   expect(() => {
-  //     fireEvent.click(screen.getByText('Call an error'));
-  //   }).toThrow('This is a test error triggered manually.');
-  //   (console.error as jest.Mock).mockRestore();
-  // });
 });
