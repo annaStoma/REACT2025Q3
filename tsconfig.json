@@ -1,0 +1,32 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "jsx": "react-jsx",
+    "strict": true,
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": [
+    "src"
+  ]
+}
