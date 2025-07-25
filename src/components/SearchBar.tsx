@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/SearchBar.scss';
 import { FaSearch } from 'react-icons/fa';
 import { MdClear } from 'react-icons/md';
@@ -8,64 +8,53 @@ interface SearchBarProps {
   onSearchClick: (value: string) => void;
 }
 
-interface SearchBarState {
-  inputValue: string;
-}
+const SearchBar = ({ value, onSearchClick }: SearchBarProps) => {
+  const [inputValue, setInputValue] = useState(value || '');
 
-class SearchBar extends Component<SearchBarProps, SearchBarState> {
-  constructor(props: SearchBarProps) {
-    super(props);
-    this.state = {
-      inputValue: props.value || '',
-    };
-  }
+  useEffect(() => {
+    setInputValue(value || '');
+  }, [value]);
 
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value;
-    this.setState({ inputValue: value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
   };
 
-  handleClick = (): void => {
-    const trimmed = this.state.inputValue.trim();
-    this.props.onSearchClick(trimmed);
+  const handleClick = () => {
+    const trimmed = inputValue.trim();
+    onSearchClick(trimmed);
   };
 
-  clear = (): void => {
-    this.setState({ inputValue: '' }, () => {
-      this.props.onSearchClick('');
-    });
+  const clear = () => {
+    setInputValue('');
+    onSearchClick('');
   };
 
-  handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      this.handleClick();
+      handleClick();
     }
   };
 
-  render() {
-    const { inputValue } = this.state;
-
-    return (
-      <div className="search-bar">
-        <input
-          className="search-bar-input"
-          type="text"
-          value={inputValue}
-          onChange={this.handleChange}
-          onKeyDown={this.handleKeyDown}
-          placeholder="Enter pokemon name..."
-        />
-        {inputValue.length > 0 && (
-          <button className="clear-button" onClick={this.clear}>
-            <MdClear />
-          </button>
-        )}
-        <button className="search-button" onClick={this.handleClick}>
-          <FaSearch />
+  return (
+    <div className="search-bar">
+      <input
+        className="search-bar-input"
+        type="text"
+        value={inputValue}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        placeholder="Enter pokemon name..."
+      />
+      {inputValue.length > 0 && (
+        <button className="clear-button" onClick={clear}>
+          <MdClear />
         </button>
-      </div>
-    );
-  }
-}
+      )}
+      <button className="search-button" onClick={handleClick}>
+        <FaSearch />
+      </button>
+    </div>
+  );
+};
 
 export default SearchBar;

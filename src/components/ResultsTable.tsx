@@ -1,7 +1,7 @@
 import { Component } from 'react';
-import type { Pokemon } from '../services/api.service';
 import '../styles/ResultsTable.scss';
 import noDataImage from '../assets/pokemon.jpg';
+import type { Pokemon } from './models/pokemon';
 
 interface ResultsTableProps {
   pokemons: Pokemon[];

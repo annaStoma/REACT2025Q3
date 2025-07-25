@@ -3,7 +3,7 @@ import ResultsTable from './ResultsTable';
 import { pokemonsMock } from '../test-utils/pokemons-list-mock';
 import '@testing-library/jest-dom';
 
-const mockPokemon = pokemonsMock[0];
+const mockPokemon = pokemonsMock.results[0];
 
 describe('ResultsTable', () => {
   test('displays "No results found." when list is empty', () => {

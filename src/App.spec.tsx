@@ -1,8 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
 import '@testing-library/jest-dom';
-import type { Pokemon } from './services/api.service';
 import { pokemonsMock } from './test-utils/pokemons-list-mock';
+import type { Pokemon } from './components/models/pokemon';
+import { MemoryRouter } from 'react-router-dom';
 
 interface HeaderProps {
   setPokemons: (data: Pokemon[]) => void;
@@ -13,7 +14,7 @@ interface ResultsTableProps {
   pokemons: Pokemon[];
 }
 
-const mockListResponse = pokemonsMock;
+const mockListResponse = pokemonsMock.results;
 
 jest.mock('./components/Header', () => {
   const MockHeader = (props: HeaderProps) => {
@@ -48,14 +49,21 @@ jest.mock('./components/ResultsTable', () => {
 });
 
 describe('App component', () => {
-  it('renders Header and ResultsTable', () => {
-    render(<App />);
+  it('renders Header and Cards', () => {
+    render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    );
     expect(screen.getByTestId('mock-header')).toBeInTheDocument();
-    expect(screen.getByTestId('results-table')).toBeInTheDocument();
   });
 
   it('displays loading spinner when isLoading is true', () => {
-    const { container } = render(<App />);
+    const { container } = render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    );
     const searchButton = container.querySelector('.search-button');
     if (searchButton) {
       fireEvent.click(searchButton);
@@ -65,7 +73,11 @@ describe('App component', () => {
   });
 
   it('sets pokemons when setPokemons is called', () => {
-    const { container } = render(<App />);
+    const { container } = render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    );
     const searchButton = container.querySelector('.search-button');
     if (searchButton) {
       fireEvent.click(searchButton);

@@ -5,7 +5,7 @@ import { pokemonsMock } from '../test-utils/pokemons-list-mock';
 
 const mockSinglePokemon = {
   id: 1,
-  name: 'pikachu',
+  name: 'bulbasaur',
   order: 1,
   height: 4,
   weight: 60,
@@ -21,16 +21,15 @@ const mockSinglePokemon = {
 
 const mockListResponse = pokemonsMock;
 
-const servers = [
+const server = setupServer(
   http.get('https://pokeapi.co/api/v2/pokemon/bulbasaur', () => {
     return HttpResponse.json(mockSinglePokemon);
   }),
-  http.get('https://pokeapi.co/api/v2/pokemon/', () => {
-    return HttpResponse.json(mockListResponse);
-  }),
-];
 
-const server = setupServer(...servers);
+  http.get('https://pokeapi.co/api/v2/pokemon', () => {
+    return HttpResponse.json(mockListResponse);
+  })
+);
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
@@ -38,15 +37,10 @@ afterAll(() => server.close());
 
 describe('getPokemonList', () => {
   it('fetches single Pokémon by term', async () => {
-    server.use(
-      http.get('https://pokeapi.co/api/v2/pokemon/pikachu', () => {
-        return HttpResponse.json(mockSinglePokemon);
-      })
-    );
-    const result = await getPokemonList('pikachu');
-    expect(result).toHaveLength(1);
-    expect(result[0].name).toBe('pikachu');
-    expect(result[0].imageUrl).toBe('official-image-url');
+    const result = await getPokemonList(0, 15, 'bulbasaur');
+    expect(result.results).toHaveLength(1);
+    expect(result.results[0].name).toBe('bulbasaur');
+    expect(result.results[0].imageUrl).toBe('official-image-url');
   });
 
   it('dispatches GlobalError on API failure', async () => {
@@ -54,12 +48,15 @@ describe('getPokemonList', () => {
     window.addEventListener('GlobalError', errorListener);
 
     server.use(
-      http.get('https://pokeapi.co/api/v2/pokemon/pikachu', () => {
+      http.get('https://pokeapi.co/api/v2/pokemon/bulbasaur', () => {
         return new HttpResponse(null, { status: 404 });
       })
     );
 
-    await expect(getPokemonList('pikachu')).rejects.toThrow('API error 404');
+    await expect(getPokemonList(0, 15, 'bulbasaur')).rejects.toThrow(
+      'API error 404'
+    );
+
     expect(errorListener).toHaveBeenCalled();
 
     window.removeEventListener('GlobalError', errorListener);

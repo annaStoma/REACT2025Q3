@@ -46,7 +46,7 @@ describe('SearchBar', () => {
     const { container } = render(
       <SearchBar value="pikachu" onSearchClick={onSearchClick} />
     );
-    const searchButton = container.querySelector('.search-button'); // only one button visible
+    const searchButton = container.querySelector('.search-button');
     if (searchButton) {
       fireEvent.click(searchButton);
       expect(onSearchClick).toHaveBeenCalledWith('pikachu');

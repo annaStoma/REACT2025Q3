@@ -19,16 +19,34 @@ jest.mock('../services/local-storage.service', () => ({
 }));
 
 jest.mock('../services/api.service', () => ({
-  getPokemonList: jest.fn().mockResolvedValue([]),
+  getPokemonList: jest.fn(),
 }));
+
 const placeholder = 'Enter pokemon name...';
 const setPokemons = jest.fn();
 const setIsLoading = jest.fn();
+const setPokemonsTotal = jest.fn();
 
 describe('Header', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('saves entered search term to localStorage on search', async () => {
+    (getPokemonList as jest.Mock).mockResolvedValue({
+      results: pokemonsMock.results,
+      count: pokemonsMock.count,
+      next: pokemonsMock.next,
+      previous: pokemonsMock.previous,
+    });
+
     const { container } = render(
-      <Header setPokemons={setPokemons} setIsLoading={setIsLoading} />
+      <Header
+        setPokemons={setPokemons}
+        setIsLoading={setIsLoading}
+        setPokemonsTotal={setPokemonsTotal}
+        currentPage={1}
+      />
     );
 
     const input = screen.getByPlaceholderText(placeholder);
@@ -45,11 +63,20 @@ describe('Header', () => {
   });
 
   test('loading state changes during API calls', async () => {
-    const mockedResponse = [{ name: 'pikachu' }];
-    (getPokemonList as jest.Mock).mockResolvedValue(mockedResponse);
+    (getPokemonList as jest.Mock).mockResolvedValue({
+      results: pokemonsMock.results,
+      count: pokemonsMock.count,
+      next: pokemonsMock.next,
+      previous: pokemonsMock.previous,
+    });
 
     const { container } = render(
-      <Header setPokemons={setPokemons} setIsLoading={setIsLoading} />
+      <Header
+        setPokemons={setPokemons}
+        setIsLoading={setIsLoading}
+        setPokemonsTotal={setPokemonsTotal}
+        currentPage={1}
+      />
     );
 
     const input = screen.getByPlaceholderText(placeholder);
@@ -66,10 +93,20 @@ describe('Header', () => {
   });
 
   test('calls setPokemons with new data after search', async () => {
-    (getPokemonList as jest.Mock).mockResolvedValue(pokemonsMock);
+    (getPokemonList as jest.Mock).mockResolvedValue({
+      results: pokemonsMock.results,
+      count: pokemonsMock.count,
+      next: pokemonsMock.next,
+      previous: pokemonsMock.previous,
+    });
 
     const { container } = render(
-      <Header setPokemons={setPokemons} setIsLoading={setIsLoading} />
+      <Header
+        setPokemons={setPokemons}
+        setIsLoading={setIsLoading}
+        setPokemonsTotal={setPokemonsTotal}
+        currentPage={1}
+      />
     );
 
     const input = screen.getByPlaceholderText(placeholder);
@@ -79,7 +116,10 @@ describe('Header', () => {
     if (searchButton) {
       fireEvent.click(searchButton);
       await waitFor(() => {
-        expect(setPokemons).toHaveBeenCalledWith(pokemonsMock);
+        expect(setPokemons).toHaveBeenCalledWith(pokemonsMock.results);
+      });
+      await waitFor(() => {
+        expect(setPokemonsTotal).toHaveBeenCalledWith(pokemonsMock.count);
       });
     }
   });

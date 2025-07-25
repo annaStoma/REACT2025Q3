@@ -1,61 +1,69 @@
-import { Component } from 'react';
+import { Outlet, useSearchParams } from 'react-router-dom';
 import './App.scss';
 import Header from './components/Header';
-import ResultsTable from './components/ResultsTable';
-import type { Pokemon } from './services/api.service';
 import { BounceLoader } from 'react-spinners';
+import Card from './components/Card';
+import Paginator from './components/Paginator';
+import { useState, useEffect } from 'react';
+import type { Pokemon } from './components/models/pokemon';
 
-interface AppState {
-  pokemons: Pokemon[];
-  isLoading: boolean;
-  fakeError?: boolean;
-}
+const App = () => {
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [pokemonsTotal, setPokemonsTotal] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
-class App extends Component<unknown, AppState> {
-  constructor(props: AppState) {
-    super(props);
-    this.state = {
-      pokemons: [],
-      isLoading: false,
-    };
-  }
+  const [searchParams, setSearchParams] = useSearchParams('');
+  useEffect(() => {
+    const pageFromUrl = Number(searchParams.get('page')) || 1;
+    setCurrentPage(pageFromUrl);
+  }, [searchParams]);
 
-  setPokemons = (data: Pokemon[]) => {
-    this.setState({ pokemons: data });
+  const setPage = (page: number) => {
+    searchParams.set('page', String(page));
+    setSearchParams(searchParams);
+    setCurrentPage(page);
   };
 
-  setIsLoading = (loading: boolean) => {
-    this.setState({ isLoading: loading });
-  };
+  return (
+    <>
+      <Header
+        setPokemons={setPokemons}
+        setIsLoading={setIsLoading}
+        setPokemonsTotal={setPokemonsTotal}
+        currentPage={currentPage}
+      />
 
-  triggerFakeError = () => {
-    this.setState({ fakeError: true });
-  };
-
-  render() {
-    const { pokemons, isLoading } = this.state;
-    if (this.state.fakeError) {
-      throw new Error(`This is a test error triggered manually.`);
-    }
-    return (
-      <>
-        <Header
-          setPokemons={this.setPokemons}
-          setIsLoading={this.setIsLoading}
-        />
-        {isLoading && (
-          <div className="loader-container">
-            <BounceLoader color="#FFCA02" size={60} />
-          </div>
-        )}
-        <ResultsTable pokemons={pokemons} />
-
-        <div className="fake-arror-button">
-          <button onClick={this.triggerFakeError}>Call an error</button>
+      {isLoading && (
+        <div className="loader-container">
+          <BounceLoader color="#FFCA02" size={60} />
         </div>
-      </>
-    );
-  }
-}
+      )}
+
+      <div className="panels">
+        <div className="left-panel">
+          <div className="card-list">
+            {pokemons.map((p) => (
+              <Card key={p.id} pokemon={p} />
+            ))}
+          </div>
+
+          {pokemonsTotal >= 10 && (
+            <Paginator
+              postsPerPage={10}
+              totalPosts={pokemonsTotal}
+              setCurrentPage={setPage}
+              currentPage={currentPage}
+            />
+          )}
+        </div>
+
+        <div className="right-panel">
+          <Outlet />
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default App;

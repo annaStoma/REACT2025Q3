@@ -1,20 +1,13 @@
-export interface Pokemon {
-  id: number;
-  name: string;
-  order: number;
-  height: number;
-  weight: number;
-  imageUrl: string;
-}
+import type {
+  Pokemon,
+  PokemonListResponse,
+} from '../components/models/pokemon';
 
-export interface PokemonListResponse {
-  results: Pokemon[];
-  count: number;
-  next: string | null;
-  previous: string | null;
-}
-
-export const getPokemonList = async (term: string = ''): Promise<Pokemon[]> => {
+export const getPokemonList = async (
+  offset: number = 0,
+  limit: number = 10,
+  term: string = ''
+): Promise<PokemonListResponse> => {
   const callError = (response: Response) => {
     if (!response.ok) {
       window.dispatchEvent(
@@ -26,34 +19,41 @@ export const getPokemonList = async (term: string = ''): Promise<Pokemon[]> => {
     }
   };
 
+  let response;
+  let data;
+  let detailedResults: Pokemon[];
   if (term) {
-    const response = await fetch(
+    response = await fetch(
       `https://pokeapi.co/api/v2/pokemon/${term.toLowerCase()}`
     );
-
     callError(response);
-
-    const data = await response.json();
-    return [
-      {
-        id: data.id,
-        name: data.name,
-        order: data.order,
-        height: data.height,
-        weight: data.weight,
-        imageUrl:
-          data.sprites.other['official-artwork'].front_default ||
-          data.sprites.front_default,
-      },
-    ];
+    const value: Pokemon = await response.json();
+    data = {
+      count: 1,
+      next: '',
+      previous: '',
+      results: [
+        {
+          id: value.id,
+          name: value.name,
+          order: value.order,
+          height: value.height,
+          weight: value.weight,
+          imageUrl:
+            value.sprites?.other['official-artwork'].front_default ||
+            value.sprites?.front_default ||
+            '',
+        },
+      ],
+    };
+    detailedResults = data.results;
   } else {
-    const response = await fetch(
-      'https://pokeapi.co/api/v2/pokemon?limit=15&offset=0'
+    response = await fetch(
+      `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
     );
     callError(response);
-
-    const data = await response.json();
-    return await Promise.all(
+    data = await response.json();
+    detailedResults = await Promise.all(
       data.results.map(async (p: { name: string; url: string }) => {
         const res = await fetch(p.url);
         const d = await res.json();
@@ -71,4 +71,10 @@ export const getPokemonList = async (term: string = ''): Promise<Pokemon[]> => {
       })
     );
   }
+  return {
+    results: detailedResults,
+    count: data.count,
+    next: data.next,
+    previous: data.previous,
+  };
 };
