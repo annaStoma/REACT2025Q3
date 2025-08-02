@@ -22,5 +22,6 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/**/*.spec.tsx", "src/**/*.spec.ts", "src/test-utils"]
 }
