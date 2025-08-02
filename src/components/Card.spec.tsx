@@ -3,6 +3,8 @@ import { MemoryRouter } from 'react-router-dom';
 import Card from './Card';
 import type { Pokemon } from './models/pokemon';
 import '@testing-library/jest-dom';
+import { Provider } from 'react-redux';
+import { mockStore } from '../test-utils/store-mock';
 
 const mockSetSearchParams = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -26,9 +28,11 @@ describe('Card component', () => {
 
   test('does not render if pokemon is not provided', () => {
     const { container } = render(
-      <MemoryRouter>
-        <Card />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <Card />
+        </MemoryRouter>
+      </Provider>
     );
 
     expect(container.firstChild).toBeNull();
@@ -36,9 +40,11 @@ describe('Card component', () => {
 
   test('renders pokemon name and image', () => {
     render(
-      <MemoryRouter>
-        <Card pokemon={mockPokemon} />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <Card pokemon={mockPokemon} />
+        </MemoryRouter>
+      </Provider>
     );
 
     expect(screen.getByText('pikachu')).toBeInTheDocument();
@@ -50,9 +56,11 @@ describe('Card component', () => {
 
   test('calls setSearchParams with correct values on click', () => {
     render(
-      <MemoryRouter>
-        <Card pokemon={mockPokemon} />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <Card pokemon={mockPokemon} />
+        </MemoryRouter>
+      </Provider>
     );
 
     const card = screen.getByText('pikachu');

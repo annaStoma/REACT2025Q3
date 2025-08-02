@@ -1,11 +1,13 @@
+@use 'variables.scss';
+
 .card-container {
   padding: 0.2rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--text-color);
   border-radius: 12px;
   width: 250px;
   height: 268px;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: rgba(0, 0, 0, 0.35) 0 0 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,4 +29,34 @@
 .pokemon-details {
   display: flex;
   flex-direction: column;
+}
+
+.card {
+  position: relative;
+}
+
+.pokemon-checkbox {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+
+  .card-container {
+    border: 1px solid black;
+  }
 }

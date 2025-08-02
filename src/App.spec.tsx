@@ -4,6 +4,8 @@ import '@testing-library/jest-dom';
 import { pokemonsMock } from './test-utils/pokemons-list-mock';
 import type { Pokemon } from './components/models/pokemon';
 import { MemoryRouter } from 'react-router-dom';
+import { mockStore } from './test-utils/store-mock';
+import { Provider } from 'react-redux';
 
 interface HeaderProps {
   setPokemons: (data: Pokemon[]) => void;
@@ -51,18 +53,22 @@ jest.mock('./components/ResultsTable', () => {
 describe('App component', () => {
   it('renders Header and Cards', () => {
     render(
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </Provider>
     );
     expect(screen.getByTestId('mock-header')).toBeInTheDocument();
   });
 
   it('displays loading spinner when isLoading is true', () => {
     const { container } = render(
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </Provider>
     );
     const searchButton = container.querySelector('.search-button');
     if (searchButton) {
@@ -74,9 +80,11 @@ describe('App component', () => {
 
   it('sets pokemons when setPokemons is called', () => {
     const { container } = render(
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </Provider>
     );
     const searchButton = container.querySelector('.search-button');
     if (searchButton) {

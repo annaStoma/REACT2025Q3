@@ -1,0 +1,31 @@
+:root {
+  --bg-color: #242424;
+  --text-color: rgba(255, 255, 255, 0.87);
+  --link-color: #646cff;
+  --link-hover: #535bf2;
+  --button-bg: #1a1a1a;
+  --button-border: transparent;
+  --scroll-track: #1a1a1a;
+  --scroll-thumb: #555;
+  --scroll-thumb-hover: #777;
+
+  --details-background: linear-gradient(90deg, #fdbb2d 0%, #3a1c71 100%);
+}
+
+.light {
+  --bg-color: #ffffff;
+  --text-color: #171717;
+  --link-color: #646cff;
+  --link-hover: #747bff;
+  --button-bg: #f9f9f9;
+  --button-border: transparent;
+  --scroll-track: #f0f0f0;
+  --scroll-thumb: #bbb;
+  --scroll-thumb-hover: #999;
+
+  --details-background: radial-gradient(
+    circle,
+    rgba(238, 174, 202, 1) 0%,
+    rgba(148, 187, 233, 1) 100%
+  );
+}

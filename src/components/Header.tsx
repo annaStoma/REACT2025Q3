@@ -8,6 +8,8 @@ import {
   STORAGE_KEYS,
 } from '../services/local-storage.service';
 import type { Pokemon, PokemonListResponse } from './models/pokemon';
+import { IoSunnyOutline } from 'react-icons/io5';
+import { AiOutlineMoon } from 'react-icons/ai';
 
 interface HeaderProps {
   setPokemons: (data: Pokemon[]) => void;
@@ -61,8 +63,29 @@ function Header({
     handleSearch(searchValue, currentPage);
   }, [handleSearch, searchValue, currentPage]);
 
+  const [theme, setTheme] = useState(() => {
+    return (
+      localStorage.getItem(STORAGE_KEYS.theme) ||
+      (window.matchMedia('(prefers-color-scheme: light)').matches
+        ? 'light'
+        : 'dark')
+    );
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.classList.add(theme);
+    localStorage.setItem(STORAGE_KEYS.theme, theme);
+  }, [theme]);
+
   return (
     <div className="header">
+      <div
+        className="theme-button"
+        onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+      >
+        {theme === 'light' ? <AiOutlineMoon /> : <IoSunnyOutline />}
+      </div>
       <div className="logo">
         <img className="logo-image" src={LogoImage} alt="logo" />
       </div>

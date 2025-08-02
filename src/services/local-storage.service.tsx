@@ -1,5 +1,6 @@
 export const STORAGE_KEYS = {
   searchTerm: 'searchTerm',
+  theme: 'theme',
 };
 
 export const LocalStorageService = {

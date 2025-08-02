@@ -6,6 +6,10 @@ import Card from './components/Card';
 import Paginator from './components/Paginator';
 import { useState, useEffect } from 'react';
 import type { Pokemon } from './components/models/pokemon';
+import { useDispatch, useSelector } from 'react-redux';
+import type { RootState } from './store/store';
+import { IoMdInformationCircleOutline } from 'react-icons/io';
+import { clearSelection } from './store/selectionSlice';
 
 const App = () => {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
@@ -23,6 +27,39 @@ const App = () => {
     searchParams.set('page', String(page));
     setSearchParams(searchParams);
     setCurrentPage(page);
+  };
+
+  const dispatch = useDispatch();
+  const selectedItems = useSelector(
+    (state: RootState) => state.selection.selectedItems
+  );
+
+  const unselectAll = () => {
+    dispatch(clearSelection());
+  };
+
+  const download = () => {
+    const headers = ['Name', 'Order', 'Height', 'Weight'];
+    const rows = selectedItems.map((p: Pokemon) => [
+      p.name,
+      p.order,
+      p.height,
+      p.weight,
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((r: []) => r.join(',')),
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${selectedItems.length}_items.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -57,6 +94,26 @@ const App = () => {
             />
           )}
         </div>
+
+        {selectedItems.length > 0 && (
+          <div className="selection-info-panel">
+            <span className="text">
+              <IoMdInformationCircleOutline className="icon" />
+              {selectedItems.length}{' '}
+              {selectedItems.length > 1
+                ? 'items are selected'
+                : 'item is selected'}
+            </span>
+            <div className="selection-info-panel-buttons">
+              <button className="unselect" onClick={unselectAll}>
+                Unselect all
+              </button>
+              <button className="download" onClick={download}>
+                Download
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="right-panel">
           <Outlet />
